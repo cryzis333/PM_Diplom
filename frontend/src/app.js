@@ -27,10 +27,15 @@ function timeStr(ts) {
 function AuthScreen({ onLogin }) {
     const [isLogin, setIsLogin] = useState(true);
     const [error, setError] = useState('');
+    const [agreed, setAgreed] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
         setError('');
+        if (!isLogin && !agreed) {
+            setError('Необходимо согласиться с политикой конфиденциальности');
+            return;
+        }
         if (isLogin) {
             const data = await login({ username: e.target.username.value, password: e.target.password.value });
             console.log('data.token:', data.token);
@@ -64,12 +69,26 @@ function AuthScreen({ onLogin }) {
                     <input className="input" name="username" type="text" placeholder="Имя пользователя" required />
                     {!isLogin && <input className="input" name="email" type="email" placeholder="Email" required />}
                     <input className="input" name="password" type="password" placeholder="Пароль" required />
+                    
+                    {!isLogin && (
+                        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, marginBottom: 12, cursor: 'pointer' }}>
+                            <input 
+                                type="checkbox" 
+                                checked={agreed} 
+                                onChange={e => setAgreed(e.target.checked)} 
+                            />
+                            <span>
+                                Я согласен с <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+                            </span>
+                        </label>
+                    )}
+                    
                     {error && <div className="error-message">{error}</div>}
                     <button className="btn btn-primary" type="submit">{isLogin ? 'Войти' : 'Зарегистрироваться'}</button>
                 </form>
                 <div className="auth-switch">
                     {isLogin ? 'Нет аккаунта? ' : 'Уже есть аккаунт? '}
-                    <button onClick={() => { setIsLogin(!isLogin); setError(''); }}>
+                    <button onClick={() => { setIsLogin(!isLogin); setError(''); setAgreed(false); }}>
                         {isLogin ? 'Регистрация' : 'Войти'}
                     </button>
                 </div>
