@@ -1,4 +1,4 @@
-const BASE = process.env.REACT_APP_API_URL || 'https://ckan52.online/api';
+const BASE = process.env.REACT_APP_API_URL || 'https://ckan52.ru/api';
 
 function getHeaders() {
     const token = localStorage.getItem('token');
